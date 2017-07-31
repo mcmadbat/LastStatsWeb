@@ -18,6 +18,36 @@ let get = (url) => {
 	return request(options);
 };
 
+let getAllScrobbles = (url, pages) => {
+	let promises = [];
+
+	for (var x = 1; x <= pages; x++){
+    let y = x;
+		let promise = get(`${url}&page=${y}`)
+										.then( data => {
+											if (data.error) {
+												return Promise.reject(data);
+											}
+											let scrobbles = data.recenttracks.track.map(item => {
+												return new Scrobble(item.name, item.album['#text'], item.artist['#text'], item.date.uts);
+											});
+
+											return Promise.resolve(scrobbles);
+										})
+										.catch(err => {
+											if (err.message){
+												return Promise.reject(err.message);
+											}
+											return Promise.reject(err);
+										});
+
+		promises.push(promise);
+	}
+
+  return Promise.all(promises);
+
+};
+
 // gets basic user information
 lastfm.getUserInfo = (user) => {
 	if (!user){
@@ -57,15 +87,18 @@ lastfm.getScrobbles = (user) => {
 		return Promise.reject(`Param user is null!`);
 	} 
 
-	let url = `${URL_ROOT}?method=user.getrecenttracks&user=${user}&api_key=${KEY}&format=json`;
+	let url = `${URL_ROOT}?method=user.getrecenttracks&user=${user}&api_key=${KEY}&format=json&limit=200`;
 
 	return get(url)
 		.then(data => {
+			if (data.error) {
+				return Promise.reject(data);
+			}
 			let scrobbles = data.recenttracks.track.map(item => {
 				return new Scrobble(item.name, item.album['#text'], item.artist['#text'], item.date.uts);
 			});
 
-			return Promise.resolve(scrobbles);
+      return getAllScrobbles(url, data.recenttracks['@attr'].totalPages);
 		})
 		.catch(err => {
 			if (err.message){
