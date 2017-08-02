@@ -11,6 +11,7 @@
     "debug": "~2.6.3",
     "express": "~4.15.2",
     "express-react-views": "^0.10.2",
+    "mongodb": "^2.2.30",
     "morgan": "~1.8.1",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",

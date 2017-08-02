@@ -1,5 +1,7 @@
 let request = require('request-promise');
 
+let mongo = require('mongodb').MongoClient;
+
 const KEY = process.env.LAST_FM_KEY;
 const URL_ROOT = `http://ws.audioscrobbler.com/2.0/`;
  
@@ -15,7 +17,7 @@ let get = (url) => {
 		json: true
 	};
 
-	return request(options);
+	return request(options); 
 };
 
 let getAllScrobbles = (url, pages) => {
@@ -45,7 +47,6 @@ let getAllScrobbles = (url, pages) => {
 	}
 
   return Promise.all(promises);
-
 };
 
 // gets basic user information
