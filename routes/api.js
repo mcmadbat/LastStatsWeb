@@ -3,6 +3,7 @@ let router = express.Router();
 let request = require('request-promise');
 let lastfm = require('../bin/lastfm');
 let db = require('../db/mongo');
+let analysis = require('../analysis/analysis');
 
 router.get('/user/getinfo', function(req, res, next) {
 	let username = req.query.user;
@@ -19,51 +20,69 @@ router.get('/user/getinfo', function(req, res, next) {
 
 router.get('/user/getscrobbles', function(req, res, next) {
 	let username = req.query.user;
-	let body;
-	let fromDb = false;
 
-	// first try to query from db
-	db.init()
-		.then(() => {
-			return db.get(username);
-		})
+	lastfm.getScrobbles(username)
 		.then(data => {
-			if (data){
-				fromDb = true;
-				return Promise.resolve(data.data);
-			}
-			// just show that it is loading
-			return lastfm.getScrobbles(username);
-		})
-		.then(scrobbles => {
-			res.status(200).send(scrobbles);
-
-			if (!fromDb) {
-				db.insert(username, scrobbles)
-					.then()
-					.catch(err => {
-						console.error(err);
-					});				
-			}
+			res.status(200).send(data);
 		})
 		.catch(err => {
 			console.error(err);
-			if (!res.headerSent) {
-				return res.status(500).send(err);
-			}
+			res.status(500).send(err);
 		});
 });
 
-router.get('/user/getscrobbles/test', function(req, res, next) {
+router.get('/user/topartists', function(req, res, next) {
 	let username = req.query.user;
-	db.init().then(() => {
-		return db.insert(username);
-	}).then (data => {
-		res.status(200).send(data);
-	}).catch (err => {
-		console.log(err)
-		res.status(500).send(err);
-	});
+	let range = req.query.range;
+	let limit = req.query.limit;
+
+	if (!limit){
+		limit = 10;
+	}
+
+	if (!range){
+		range = 'year';
+	}
+
+	lastfm
+		.getScrobbles(username)
+		.then(scrobbles => {
+			return analysis.topartists(scrobbles, range, limit);
+		})
+		.then(data => {
+			res.status(200).send(data);
+		})
+		.catch(err => {
+			console.error(err);
+			if(!res.headerSent){
+				res.status(500).send(err);
+			}
+		});
+
+});
+
+router.get('/user/scrobblecount', function(req, res, next){
+	let username = req.query.user;
+	let range = req.query.range;
+
+	if (!range){
+		range = 'year';
+	}
+
+	lastfm
+		.getScrobbles(username)
+		.then(scrobbles => {
+			return analysis.scrobbleCount(scrobbles, range);
+		})
+		.then(data => {
+			res.status(200).send(data);
+		})
+		.catch(err => {
+			console.error(err);
+			if(!res.headerSent){
+				res.status(500).send(err);
+			}
+		});
 });
 
 module.exports = router;

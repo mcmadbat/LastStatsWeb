@@ -54,5 +54,4 @@ db.insert = (_id, data) => {
 }
 
 
-
 module.exports = db;
