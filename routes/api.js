@@ -2,7 +2,7 @@ let express = require('express');
 let router = express.Router();
 let request = require('request-promise');
 let lastfm = require('../bin/lastfm');
-let db = require('../db/mongo')
+let db = require('../db/mongo');
 
 router.get('/user/getinfo', function(req, res, next) {
 	let username = req.query.user;
@@ -19,20 +19,44 @@ router.get('/user/getinfo', function(req, res, next) {
 
 router.get('/user/getscrobbles', function(req, res, next) {
 	let username = req.query.user;
+	let body;
+	let fromDb = false;
 
-	lastfm
-		.getScrobbles(username)
+	// first try to query from db
+	db.init()
+		.then(() => {
+			return db.get(username);
+		})
 		.then(data => {
-			res.status(200).send(data);
+			if (data){
+				fromDb = true;
+				return Promise.resolve(data.data);
+			}
+			// just show that it is loading
+			return lastfm.getScrobbles(username);
+		})
+		.then(scrobbles => {
+			res.status(200).send(scrobbles);
+
+			if (!fromDb) {
+				db.insert(username, scrobbles)
+					.then()
+					.catch(err => {
+						console.error(err);
+					});				
+			}
 		})
 		.catch(err => {
-			res.status(500).send(err);
+			console.error(err);
+			if (!res.headerSent) {
+				return res.status(500).send(err);
+			}
 		});
 });
 
 router.get('/user/getscrobbles/test', function(req, res, next) {
 	let username = req.query.user;
-	db.init().then(data => {
+	db.init().then(() => {
 		return db.insert(username);
 	}).then (data => {
 		res.status(200).send(data);
