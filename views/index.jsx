@@ -1,9 +1,15 @@
-var React = require('react');
+let React = require('react');
+let Header = require('./layouts/header')
 
-class HelloMessage extends React.Component {
+class Index extends React.Component {
   render() {
-    return <div>{this.props.message}</div>;
-  }
-}
+    return (
+    	<body style = {{margin:`0`}}>
+    		<Header username={this.props.username}/>
+    	</body>
+  	)
+  };
+};
 
-module.exports = HelloMessage;
+
+module.exports = Index;
