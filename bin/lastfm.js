@@ -98,6 +98,7 @@ lastfm.getUserInfo = (user) => {
 				data.user.name,
 				data.user.realName,
 				data.user.url,
+        data.user.image[3]['#text'],
 				data.user.country,
 				data.user.playcount,
 				data.user.registered.unixtime
