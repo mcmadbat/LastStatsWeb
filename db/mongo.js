@@ -1,57 +1,54 @@
-let mongo = require('mongodb').MongoClient;
+let mongo = require('mongodb').MongoClient
 
-let conn = null;
-let db = {};
-let url = 'mongodb://localhost:27017/lastfm';
+let conn = null
+let db = {}
+let url = 'mongodb://localhost:27017/lastfm'
 
 db.init = () => {
-  if (conn === null){
+  if (conn === null) {
     return mongo.connect(url).then(db => {
-      conn = db;
-      return Promise.resolve(true);
-    });
+      conn = db
+      return Promise.resolve(true)
+    })
   } else {
-    return Promise.resolve(true);
+    return Promise.resolve(true)
   }
 }
 
 db.dispose = () => {
   if (conn) {
-    conn.close();
+    conn.close()
   }
 }
 
 db.get = (_id) => {
   if (!conn) {
-    return Promise.reject(`db connection is not setup (try init()?)`);
+    return Promise.reject(new Error(`db connection is not setup (try init()?)`))
   }
 
-  return conn.collection(`scrobbles`).findOne({_id});
-
+  return conn.collection(`scrobbles`).findOne({_id})
 }
 
 db.insert = (_id, data) => {
   if (!conn) {
-    return Promise.reject(`db connection is not setup (try init()?)`);
+    return Promise.reject(new Error(`db connection is not setup (try init()?)`))
   }
 
-  let collection = conn.collection(`scrobbles`);
+  let collection = conn.collection(`scrobbles`)
 
   let doc = {
     _id,
     data
-  };
+  }
 
   // first check if the doc exists
   return collection.findOne({_id}).then(data => {
-    if (data){
-      return Promise.reject(`${_id} is already a document!`);
+    if (data) {
+      return Promise.reject(new Error(`${_id} is already a document!`))
     } else {
-      return collection.insertOne(doc);
+      return collection.insertOne(doc)
     }
-  });
-  
+  })
 }
 
-
-module.exports = db;
+module.exports = db
