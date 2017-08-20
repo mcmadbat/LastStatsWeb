@@ -13,6 +13,15 @@ analysis.topartists = (scrobbles, range, limit) => {
   let result = {}
 
   scrobbles.forEach(scrobble => {
+    if (!range) {
+      // all-time
+      if (result[scrobble.artist]) {
+        result[scrobble.artist]++
+      } else {
+        result[scrobble.artist] = 1
+      }
+    }
+
     let date = new Date(scrobble.time * 1000)
 
     let bracket = getTimeBracket(date)
@@ -39,6 +48,30 @@ analysis.topartists = (scrobbles, range, limit) => {
       }
     }
   })
+
+  // now only return the top
+  if (!range) {
+    let arr = Object.keys(result)
+      .map(x => {
+        return {
+          artist: x,
+          plays: result[x]
+        }
+      })
+      .sort((a, b) => {
+        if (a.plays >= b.plays) {
+          return -1
+        } else {
+          return 1
+        }
+      })
+      .slice(0, limit)
+
+    result = {}
+    arr.forEach(x => {
+      result[x.artist] = x.plays
+    })
+  }
 
   return Promise.resolve(result)
 }
@@ -70,6 +103,8 @@ analysis.scrobbleCount = (scrobbles, range) => {
       }
     }
   })
+
+  delete result['1969']
 
   return Promise.resolve(result)
 }

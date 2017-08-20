@@ -39,10 +39,6 @@ router.get('/user/topartists', function (req, res, next) {
     limit = 10
   }
 
-  if (!range) {
-    range = 'year'
-  }
-
   lastfm
     .getScrobbles(username)
     .then(scrobbles => {

@@ -1,5 +1,5 @@
 import React from 'react'
-import Artists from './sections/artists'
+import Overview from './sections/overview'
 import Header from './layouts/header'
 
 class App extends React.Component {
@@ -11,7 +11,7 @@ class App extends React.Component {
     return (
       <body style={{margin: `0`}}>
         <Header user={this.props.user} />
-        <Artists user={this.props.user} />
+        <Overview user={this.props.user} />
       </body>
     )
   };
