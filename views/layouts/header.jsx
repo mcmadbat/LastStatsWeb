@@ -1,34 +1,30 @@
 import React from 'react'
+import {Container, Row, Col} from 'reactstrap'
 
 class Header extends React.Component {
   constructor (props) {
     super(props)
 
     let divStyle = {
-      display: `flex`,
-      position: `relative`,
-      minHeight: `45vh`,
-      width: `100%`,
       backgroundColor: `#ff0000`,
-      margin: `0`,
+      padding: `50px`,
       color: `white`
     }
 
     let h1Style = {
-      textAlign: `center`,
-      verticalAlign: `middle`
+      textAlign: `center`
     }
 
     let imgStyle = {
-      height: `200px`,
+      height: `280px`,
       borderRadius: `50%`,
       margin: `auto`,
-      display: `block`
+      display: 'block',
+      padding: '15px'
     }
 
     let centerDiv = {
-      margin: `auto 5px`,
-      width: `100%`
+      margin: `auto 50px`
     }
 
     this.style = {
@@ -44,19 +40,19 @@ class Header extends React.Component {
     let name = user.realname ? user.realname : user.name
 
     return (
-      <div style={this.style.div}>
-
-        <div style={this.style.centerDiv}>
-
-          <h1 style={this.style.h1}>Hello {name}</h1>
-          <img style={this.style.img} src={user.imgUrl} />
-          <h3 style={{textAlign: `center`}}>
-            Plays: {user.playcount}
-          </h3>
-
-        </div>
-
-      </div>
+      <Container fluid='true' style={this.style.div}>
+        <Row className='justify-content-sm-center'>
+          <Col sm='6'>
+            <div style={this.style.centerDiv}>
+              <h1 style={this.style.h1}>Hello {name}</h1>
+              <img style={this.style.img} src={user.imgUrl} />
+              <h3 style={{textAlign: `center`}}>
+                Plays: {user.playcount}
+              </h3>
+            </div>
+          </Col>
+        </Row>
+      </Container>
     )
   };
 }
