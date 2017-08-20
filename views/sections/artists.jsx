@@ -3,7 +3,7 @@ import {Container, Row, Col} from 'reactstrap'
 import ChartCard from './../layouts/chartCard'
 
 class Artists extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     let divStyle = {
@@ -23,7 +23,7 @@ class Artists extends React.Component {
 
   render () {
     return (
-      <Container fluid='true' style={this.style.divStyle}>
+      <Container fluid style={this.style.divStyle}>
         <Row className='justify-content-sm-center'>
           <Col sm='6'>
             <h1 style={this.style.h1}>Artists</h1>
@@ -32,22 +32,22 @@ class Artists extends React.Component {
 
         <Row>
           <Col sm='12' lg='4'>
-            <ChartCard/>
+            <ChartCard />
           </Col>
           <Col sm='12' lg='4'>
-            <ChartCard/>
+            <ChartCard />
           </Col>
           <Col sm='12' lg='4'>
-            <ChartCard/>
+            <ChartCard />
           </Col>
           <Col sm='12' lg='4'>
-            <ChartCard/>
+            <ChartCard />
           </Col>
           <Col sm='12' lg='4'>
-            <ChartCard/>
+            <ChartCard />
           </Col>
           <Col sm='12' lg='4'>
-            <ChartCard/>
+            <ChartCard />
           </Col>
         </Row>
       </Container>

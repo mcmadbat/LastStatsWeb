@@ -1,20 +1,28 @@
 import React from 'react'
-import Artists from './sections/artists'
-import Header from './layouts/header'
+import App from './app'
+import axios from 'axios'
 
 class Index extends React.Component {
+  constructor (props) {
+    super(props)
+    this.state = {}
+  }
+
+  componentDidMount () {
+    let user = 'mcmadbat3'
+
+    axios
+      .get(`http://localhost:3000/api/user/getinfo?user=${user}`)
+      .then(res => {
+        this.setState({user: res.data})
+      })
+  }
+
   render () {
     return (
-      <html>
-        <head>
-          <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css' />
-        </head>
-        
-        <body style={{margin: `0`}}>
-          <Header user={this.props.user} />
-          <Artists user={this.props.user}/>
-        </body>
-      </html>
+      <body style={{margin: `0`}}>
+        <App user={this.state.user} />
+      </body>
     )
   };
 };

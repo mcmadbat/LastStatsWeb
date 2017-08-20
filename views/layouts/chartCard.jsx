@@ -1,16 +1,8 @@
 import React from 'react'
 import { VictoryTheme, VictoryBar, VictoryChart } from 'victory'
 
-const data = [
-  {quarter: 1, earnings: 13000},
-  {quarter: 2, earnings: 16500},
-  {quarter: 3, earnings: 14250},
-  {quarter: 4, earnings: 19000}
-];
-
-
 class ChartCard extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     let divStyle = {
@@ -20,7 +12,7 @@ class ChartCard extends React.Component {
     }
 
     let barStyle = {
-      data: { fill: "#c43a31" }
+      data: { fill: '#c43a31' }
     }
 
     this.style = {
@@ -35,18 +27,18 @@ class ChartCard extends React.Component {
   {quarter: 2, earnings: 16500},
   {quarter: 3, earnings: 14250},
   {quarter: 4, earnings: 19000}
-]
+    ]
     return (
       <div style={this.style.divStyle}>
         <h1>Chart Title</h1>
         <VictoryChart domainPadding={20}>
-          <VictoryBar style={{ data: { fill: "red" } }}
-          data={data}
-          x="quarter"
-          y="earnings" 
-          theme={VictoryTheme.material}/>
+          <VictoryBar style={{ data: { fill: 'red' } }}
+            data={data}
+            x='quarter'
+            y='earnings'
+            theme={VictoryTheme.material} />
         </VictoryChart>
-        
+
       </div>
     )
   }
