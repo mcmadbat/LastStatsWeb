@@ -6,23 +6,48 @@ var cookieParser = require('cookie-parser')
 var bodyParser = require('body-parser')
 
 var api = require('./routes/api')
-var index = require('./routes/index')
+
+const webpack = require('webpack')
+const webpackMiddleware = require('webpack-dev-middleware')
+const webpackHotMiddleware = require('webpack-hot-middleware')
+const config = require('./webpack.config.js')
 
 var app = express()
-
-// view engine setup
-app.set('views', path.join(__dirname, 'views'))
-app.set('view engine', 'jsx')
-app.engine('jsx', require('express-react-views').createEngine())
 
 app.use(logger('dev'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser())
-app.use(express.static(path.join(__dirname, 'public')))
 
-app.use('/', index)
 app.use('/api', api)
+
+if (process.env.NODE_ENV !== 'production') {
+  const compiler = webpack(config)
+  const middleware = webpackMiddleware(compiler, {
+    publicPath: config.output.publicPath,
+    contentBase: 'src',
+    stats: {
+      colors: true,
+      hash: false,
+      timings: true,
+      chunks: false,
+      chunkModules: false,
+      modules: false
+    }
+  })
+
+  app.use(middleware)
+  app.use(webpackHotMiddleware(compiler))
+  app.get('*', function response (req, res) {
+    res.write(middleware.fileSystem.readFileSync(path.join(__dirname, 'dist/index.html')))
+    res.end()
+  })
+} else {
+  app.use(express.static(path.join(__dirname, 'dist')))
+  app.get('*', function response (req, res) {
+    res.sendFile(path.join(__dirname, 'dist/index.html'))
+  })
+}
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

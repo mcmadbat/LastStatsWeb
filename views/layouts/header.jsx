@@ -40,7 +40,7 @@ class Header extends React.Component {
     let name = user.realname ? user.realname : user.name
 
     return (
-      <Container fluid='true' style={this.style.div}>
+      <Container fluid style={this.style.div}>
         <Row className='justify-content-sm-center'>
           <Col sm='6'>
             <div style={this.style.centerDiv}>
