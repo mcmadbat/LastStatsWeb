@@ -42,7 +42,57 @@ router.get('/user/topartists', function (req, res, next) {
   lastfm
     .getScrobbles(username)
     .then(scrobbles => {
-      return analysis.topartists(scrobbles, range, limit)
+      return analysis.topArtists(scrobbles, range, limit)
+    })
+    .then(data => {
+      res.status(200).send(data)
+    })
+    .catch(err => {
+      console.error(err)
+      if (!res.headerSent) {
+        res.status(500).send(err)
+      }
+    })
+})
+
+router.get('/user/topalbums', function (req, res, next) {
+  let username = req.query.user
+  let range = req.query.range
+  let limit = req.query.limit
+
+  if (!limit) {
+    limit = 10
+  }
+
+  lastfm
+    .getScrobbles(username)
+    .then(scrobbles => {
+      return analysis.topAlbums(scrobbles, range, limit)
+    })
+    .then(data => {
+      res.status(200).send(data)
+    })
+    .catch(err => {
+      console.error(err)
+      if (!res.headerSent) {
+        res.status(500).send(err)
+      }
+    })
+})
+
+router.get('/user/toptracks', function (req, res, next) {
+  let username = req.query.user
+  let range = req.query.range
+  let limit = req.query.limit
+
+  if (!limit) {
+    limit = 10
+  }
+
+  lastfm
+    .getScrobbles(username)
+    .then(scrobbles => {
+      return analysis.topTracks(scrobbles, range, limit)
     })
     .then(data => {
       res.status(200).send(data)
