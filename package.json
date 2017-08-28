@@ -12,6 +12,7 @@
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "body-parser": "~1.17.1",
+    "chart.js": "^2.6.0",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.3",
     "express": "~4.15.2",
@@ -20,12 +21,12 @@
     "react": "^15.6.1",
     "react-addons-css-transition-group": "^15.6.0",
     "react-addons-transition-group": "^15.6.0",
+    "react-chartjs-2": "^2.6.1",
     "react-dom": "^15.6.1",
     "reactstrap": "^4.8.0",
     "request": "^2.81.0",
     "request-promise": "^4.2.1",
-    "serve-favicon": "~2.4.2",
-    "victory": "^0.21.5"
+    "serve-favicon": "~2.4.2"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

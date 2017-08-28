@@ -8,7 +8,7 @@ class TableCard extends React.Component {
       margin: 'auto 0px',
       height: '100%',
       width: '100%',
-      maxHeight: '500px'
+      padding: '20px'
     }
 
     let barStyle = {
