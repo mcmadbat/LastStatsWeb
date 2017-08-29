@@ -18,10 +18,18 @@ router.get('/user/getinfo', function (req, res, next) {
 
 router.get('/user/getscrobbles', function (req, res, next) {
   let username = req.query.user
+  let receiveData = req.query.receiveData
+
+  if (req.query.receiveData != false){
+    receiveData = true
+  }
 
   lastfm
     .getScrobbles(username)
     .then(data => {
+      if (!receiveData) {
+        data = 'done!\n'
+      }
       res.status(200).send(data)
     })
     .catch(err => {

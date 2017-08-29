@@ -30,7 +30,7 @@ class Overview extends React.Component {
     let username = this.props.user.name
 
     return axios
-      .get(`http://localhost:3000/api/user/scrobblecount?user=${username}`)
+      .get(`http://localhost:3000/api/user/scrobblecount?user=${username}`, {'timeout': 600000})
       .then(res => {
         this.setState({playsByYear: res.data})
       })
@@ -40,7 +40,7 @@ class Overview extends React.Component {
     let username = this.props.user.name
 
     return axios
-      .get(`http://localhost:3000/api/user/scrobblecount?user=${username}&range=lastyear`)
+      .get(`http://localhost:3000/api/user/scrobblecount?user=${username}&range=lastyear`,{'timeout': 600000})
       .then(res => {
         this.setState({lastYear: res.data})
       })
@@ -50,7 +50,7 @@ class Overview extends React.Component {
     let username = this.props.user.name
 
     return axios
-      .get(`http://localhost:3000/api/user/topartists?user=${username}&limit=10`)
+      .get(`http://localhost:3000/api/user/topartists?user=${username}&limit=10`, {'timeout': 600000})
       .then(res => {
         let data = Object
           .keys(res.data).map(x => {
@@ -78,7 +78,7 @@ class Overview extends React.Component {
     let username = this.props.user.name
 
     return axios
-      .get(`http://localhost:3000/api/user/topalbums?user=${username}&limit=10`)
+      .get(`http://localhost:3000/api/user/topalbums?user=${username}&limit=10`, {'timeout': 600000})
       .then(res => {
         let data = Object
           .keys(res.data).map(x => {
@@ -106,7 +106,7 @@ class Overview extends React.Component {
     let username = this.props.user.name
 
     return axios
-      .get(`http://localhost:3000/api/user/toptracks?user=${username}&limit=10`)
+      .get(`http://localhost:3000/api/user/toptracks?user=${username}&limit=10`, {'timeout': 600000})
       .then(res => {
         let data = Object
           .keys(res.data).map(x => {
@@ -131,8 +131,14 @@ class Overview extends React.Component {
   }
 
   componentDidMount () {
+    let username = this.props.user.name
     axios
-      .all([this.getPlaysByYear(), this.getPlaysLastYear(), this.getTopArtists(), this.getTopTracks(), this.getTopAlbums()])
+      .get(`http://localhost:3000/api/user/getscrobbles?user=${username}&receiveData=false`, {'timeout': 600000})
+      .then(data => {
+        console.log(data)
+        return axios
+                .all([this.getPlaysByYear(), this.getPlaysLastYear(), this.getTopArtists(), this.getTopTracks(), this.getTopAlbums()])
+      })   
       .then(() => {
         this.setState({loading: false})
       })

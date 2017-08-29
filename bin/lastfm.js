@@ -151,12 +151,10 @@ lastfm.getScrobbles = (user) => {
     .then(scrobbles => {
       if (!fromDb) {
         // insert into db as well
-        db.insert(user, scrobbles)
+        return db.insert(user, scrobbles)
           .then(() => {
             console.log(`scrobble data for ${user} inserted into db`)
-          })
-          .catch(err => {
-            console.error(err)
+            return Promise.resolve(scrobbles)
           })
       }
 
