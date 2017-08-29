@@ -9,10 +9,10 @@ class App extends React.Component {
     }
 
     return (
-      <body style={{margin: `0`}}>
+      <div style={{margin: `0`}}>
         <Header user={this.props.user} />
         <Overview user={this.props.user} />
-      </body>
+      </div>
     )
   };
 };

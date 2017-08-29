@@ -1,6 +1,7 @@
 import React from 'react'
 import App from './app'
 import axios from 'axios'
+import UsernameInput from './layouts/usernameInput'
 
 class Index extends React.Component {
   constructor (props) {
@@ -8,22 +9,24 @@ class Index extends React.Component {
     this.state = {}
   }
 
-  componentDidMount () {
-    let user = 'mcmadbat3'
+  handleUsernameChange = (username) => {
+    this.setState({username})
+    this.loadUserInfo(username)
+  }
 
+  loadUserInfo(username) {
     axios
-      .get(`http://localhost:3000/api/user/getinfo?user=${user}`)
+      .get(`http://localhost:3000/api/user/getinfo?user=${username}`)
       .then(res => {
         this.setState({user: res.data})
       })
   }
 
   render () {
-    return (
-      <body style={{margin: `0`}}>
-        <App user={this.state.user} />
-      </body>
-    )
+    if (!this.state.username) {
+      return <UsernameInput handleUsernameChange={this.handleUsernameChange}/>
+    }
+    return <App user={this.state.user} />
   };
 };
 

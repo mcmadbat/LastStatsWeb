@@ -3,6 +3,7 @@ import {Container, Row, Col} from 'reactstrap'
 import BarGraphCard from './../layouts/barGraphCard'
 import TableCard from './../layouts/tableCard'
 import axios from 'axios'
+import Loading from 'react-loading-animation'
 
 class Overview extends React.Component {
   constructor (props) {
@@ -22,24 +23,33 @@ class Overview extends React.Component {
       h1: h1Style
     }
 
-    this.state = {}
+    this.state = {loading: true}
   }
 
-  componentDidMount () {
+  getPlaysByYear() {
     let username = this.props.user.name
-    axios
+
+    return axios
       .get(`http://localhost:3000/api/user/scrobblecount?user=${username}`)
       .then(res => {
         this.setState({playsByYear: res.data})
       })
+  }
 
-    axios
+  getPlaysLastYear() {
+    let username = this.props.user.name
+    
+    return axios
       .get(`http://localhost:3000/api/user/scrobblecount?user=${username}&range=lastyear`)
       .then(res => {
         this.setState({lastYear: res.data})
       })
+  }
 
-    axios
+  getTopArtists() {
+    let username = this.props.user.name
+
+    return axios
       .get(`http://localhost:3000/api/user/topartists?user=${username}&limit=10`)
       .then(res => {
         let data = Object
@@ -62,8 +72,12 @@ class Overview extends React.Component {
 
         this.setState({topArtists: data, topArtistColumns: columns})
       })
+  }
 
-    axios
+  getTopAlbums() {
+    let username = this.props.user.name
+
+    return axios
       .get(`http://localhost:3000/api/user/topalbums?user=${username}&limit=10`)
       .then(res => {
         let data = Object
@@ -85,9 +99,14 @@ class Overview extends React.Component {
         }]
 
         this.setState({topAlbums: data, topAlbumColumns: columns})
-      })
+      })    
+  }
 
-    axios
+  getTopTracks() {
+    let username = this.props.user.name
+
+
+    return axios
       .get(`http://localhost:3000/api/user/toptracks?user=${username}&limit=10`)
       .then(res => {
         let data = Object
@@ -109,10 +128,31 @@ class Overview extends React.Component {
         }]
 
         this.setState({topTracks: data, topTracksColumns: columns})
+      })   
+  }
+
+  componentDidMount () {
+    axios
+      .all([this.getPlaysByYear(), this.getPlaysLastYear(), this.getTopArtists(), this.getTopTracks(), this.getTopAlbums()])
+      .then(() => {
+        this.setState({loading:false})
       })
   }
 
   render () {
+    if (this.state.loading) {
+      return (
+          <Container fluid style={this.style.divStyle}>
+            <Row className='justify-content-sm-center'>
+              <Col sm ='6'>
+                <h1 style={this.style.h1}>Loading (this may take a while...) </h1>
+                <Loading />
+              </Col>
+            </Row>
+          </Container>
+          
+        )
+    }
     return (
       <Container fluid style={this.style.divStyle}>
         <Row className='justify-content-sm-center'>
