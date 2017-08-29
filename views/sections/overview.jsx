@@ -26,7 +26,7 @@ class Overview extends React.Component {
     this.state = {loading: true}
   }
 
-  getPlaysByYear() {
+  getPlaysByYear () {
     let username = this.props.user.name
 
     return axios
@@ -36,9 +36,9 @@ class Overview extends React.Component {
       })
   }
 
-  getPlaysLastYear() {
+  getPlaysLastYear () {
     let username = this.props.user.name
-    
+
     return axios
       .get(`http://localhost:3000/api/user/scrobblecount?user=${username}&range=lastyear`)
       .then(res => {
@@ -46,7 +46,7 @@ class Overview extends React.Component {
       })
   }
 
-  getTopArtists() {
+  getTopArtists () {
     let username = this.props.user.name
 
     return axios
@@ -74,7 +74,7 @@ class Overview extends React.Component {
       })
   }
 
-  getTopAlbums() {
+  getTopAlbums () {
     let username = this.props.user.name
 
     return axios
@@ -99,12 +99,11 @@ class Overview extends React.Component {
         }]
 
         this.setState({topAlbums: data, topAlbumColumns: columns})
-      })    
+      })
   }
 
-  getTopTracks() {
+  getTopTracks () {
     let username = this.props.user.name
-
 
     return axios
       .get(`http://localhost:3000/api/user/toptracks?user=${username}&limit=10`)
@@ -128,30 +127,30 @@ class Overview extends React.Component {
         }]
 
         this.setState({topTracks: data, topTracksColumns: columns})
-      })   
+      })
   }
 
   componentDidMount () {
     axios
       .all([this.getPlaysByYear(), this.getPlaysLastYear(), this.getTopArtists(), this.getTopTracks(), this.getTopAlbums()])
       .then(() => {
-        this.setState({loading:false})
+        this.setState({loading: false})
       })
   }
 
   render () {
     if (this.state.loading) {
       return (
-          <Container fluid style={this.style.divStyle}>
-            <Row className='justify-content-sm-center'>
-              <Col sm ='6'>
-                <h1 style={this.style.h1}>Loading (this may take a while...) </h1>
-                <Loading />
-              </Col>
-            </Row>
-          </Container>
-          
-        )
+        <Container fluid style={this.style.divStyle}>
+          <Row className='justify-content-sm-center'>
+            <Col sm='6'>
+              <h1 style={this.style.h1}>Loading (this may take a while...) </h1>
+              <Loading />
+            </Col>
+          </Row>
+        </Container>
+
+      )
     }
     return (
       <Container fluid style={this.style.divStyle}>

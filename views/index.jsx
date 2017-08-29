@@ -7,14 +7,15 @@ class Index extends React.Component {
   constructor (props) {
     super(props)
     this.state = {}
+    this.handleUsernameChange = this.handleUsernameChange.bind(this)
   }
 
-  handleUsernameChange = (username) => {
+  handleUsernameChange (username) {
     this.setState({username})
     this.loadUserInfo(username)
   }
 
-  loadUserInfo(username) {
+  loadUserInfo (username) {
     axios
       .get(`http://localhost:3000/api/user/getinfo?user=${username}`)
       .then(res => {
@@ -24,7 +25,7 @@ class Index extends React.Component {
 
   render () {
     if (!this.state.username) {
-      return <UsernameInput handleUsernameChange={this.handleUsernameChange}/>
+      return <UsernameInput handleUsernameChange={this.handleUsernameChange} />
     }
     return <App user={this.state.user} />
   };

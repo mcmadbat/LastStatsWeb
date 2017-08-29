@@ -1,5 +1,5 @@
 import React from 'react'
-import {Container, Input, FormGroup, Label, Button} from 'reactstrap'
+import {Container, Input, Button} from 'reactstrap'
 
 class UsernameInput extends React.Component {
   constructor (props) {
@@ -34,7 +34,8 @@ class UsernameInput extends React.Component {
       fontSize: '20px',
       textAlign: 'center',
       border: '1px solid black',
-      margin: '30px'
+      margin: '30px',
+      color: 'red'
     }
 
     this.style = {
@@ -44,7 +45,7 @@ class UsernameInput extends React.Component {
       input: inputStyle
     }
 
-    this.state = { username: ''}
+    this.state = {username: ''}
   }
 
   onclick () {
