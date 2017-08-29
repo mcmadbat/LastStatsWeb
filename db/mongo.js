@@ -38,7 +38,8 @@ db.insert = (_id, data) => {
 
   let doc = {
     _id,
-    data
+    data,
+    updated: new Date().getTime()
   }
 
   // first check if the doc exists
@@ -49,6 +50,23 @@ db.insert = (_id, data) => {
       return collection.insertOne(doc)
     }
   })
+}
+
+db.upsert = (_id, data) => {
+  if (!conn) {
+    return Promise.reject(new Error(`db connection is not setup (try init()?)`))
+  }
+
+  let collection = conn.collection(`scrobbles`)
+
+  let doc = {
+    _id,
+    data,
+    updated: new Date().getTime()
+  }
+
+  // first check if the doc exists
+  return collection.replaceOne({_id}, doc, {upsert: true})
 }
 
 module.exports = db

@@ -10,6 +10,9 @@ let lastfm = {}
 let User = require('../routes/models/User')
 let Scrobble = require('../routes/models/Scrobble')
 
+const SECONDS_IN_DAY = 86400
+const DATA_REFRESH_INTERVAL = SECONDS_IN_DAY
+
 // performs a http GET operation on the url and return the response in a promise
 let get = (url) => {
   let options = {
@@ -131,8 +134,14 @@ lastfm.getScrobbles = (user) => {
     })
     .then(data => {
       if (data) {
-        fromDb = true
-        return Promise.resolve(data)
+        // check data freshness
+        let timeDiff = new Date().getTime() - data.updated
+        timeDiff = timeDiff / 1000
+
+        if (timeDiff < DATA_REFRESH_INTERVAL) {
+          fromDb = true
+          return Promise.resolve(data)
+        }
       }
 
       return get(url)
@@ -151,7 +160,7 @@ lastfm.getScrobbles = (user) => {
     .then(scrobbles => {
       if (!fromDb) {
         // insert into db as well
-        return db.insert(user, scrobbles)
+        return db.upsert(user, scrobbles)
           .then(() => {
             console.log(`scrobble data for ${user} inserted into db`)
             return Promise.resolve(scrobbles)
