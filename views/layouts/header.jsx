@@ -47,7 +47,7 @@ class Header extends React.Component {
               <h1 style={this.style.h1}>Hello {name}</h1>
               <img style={this.style.img} src={user.imgUrl} />
               <h3 style={{textAlign: `center`}}>
-                Plays: {user.playcount}
+                Plays: {parseInt(user.playcount).toLocaleString()}
               </h3>
             </div>
           </Col>
