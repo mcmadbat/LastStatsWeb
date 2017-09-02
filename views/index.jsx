@@ -21,11 +21,14 @@ class Index extends React.Component {
       .then(res => {
         this.setState({user: res.data})
       })
+      .catch(() => {
+        this.setState({showError: true, username: ''})
+      })
   }
 
   render () {
     if (!this.state.username) {
-      return <UsernameInput handleUsernameChange={this.handleUsernameChange} />
+      return <UsernameInput showError={this.state.showError} handleUsernameChange={this.handleUsernameChange} />
     }
     return <App user={this.state.user} />
   };

@@ -1,5 +1,5 @@
 import React from 'react'
-import {Container, Input, Button} from 'reactstrap'
+import {Container, Input, UncontrolledAlert, Button} from 'reactstrap'
 
 class UsernameInput extends React.Component {
   constructor (props) {
@@ -57,6 +57,18 @@ class UsernameInput extends React.Component {
   }
 
   render () {
+    if (this.props.showError) {
+      return (
+        <Container style={this.style.div}>
+          <UncontrolledAlert color='danger'>
+            <strong>Oh snap!</strong> The user you searched for doesn't exist!
+          </UncontrolledAlert>
+          <h1 style={this.style.h1}>Please enter your last.fm username</h1>
+          <Input name='username' type='text' size='lg' id='inputUser' placeholder='mcmadbat3' style={this.style.input} onChange={this.handleChange.bind(this)} />
+          <Button color='primary' onClick={() => this.onclick()}>Submit</Button>
+        </Container>
+      )
+    }
     return (
       <Container style={this.style.div}>
         <h1 style={this.style.h1}>Please enter your last.fm username</h1>
