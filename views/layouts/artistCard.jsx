@@ -1,9 +1,12 @@
 import React from 'react'
 import { Card, CardImg, CardTitle,
- CardSubtitle, CardBlock, Container, Row, Col } from 'reactstrap'
+ CardSubtitle, CardBlock } from 'reactstrap'
 
 import Loading from 'react-loading-animation'
 import axios from 'axios'
+
+const VINYL_IMG_URL = `https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Disque_Vinyl.svg/500px-Disque_Vinyl.svg.png`
+const WHITE_SQUARE_URL = 'https://vignette2.wikia.nocookie.net/uncyclopedia/images/4/44/White_square.png/revision/latest?cb=20061003200043'
 
 class ArtistCard extends React.Component {
   constructor (props) {
@@ -23,23 +26,27 @@ class ArtistCard extends React.Component {
       h1: h1Style
     }
 
+    this.getCardImage = this.getCardImage.bind(this)
+
     this.state = {loading: true, imgUrl: '', hasData: true}
   }
 
-  componentDidMount () {
-    if (!this.props.data) {
+  getCardImage (props) {
+    this.setState({loading: true, hasData: true, imgUrl: WHITE_SQUARE_URL})
+
+    if (!props.data) {
       this.setState({hasData: false})
       this.setState({loading: false})
-      this.setState({imgUrl: 'https://vignette2.wikia.nocookie.net/uncyclopedia/images/4/44/White_square.png/revision/latest?cb=20061003200043'})
       return
     }
 
     axios
-      .get(`http://localhost:3000/api/user/getArtistInfo?artist=${this.props.data.artist}`, {'timeout': 600000})
+      .get(`http://localhost:3000/api/user/getArtistInfo?artist=${props.data.artist}`, {'timeout': 600000})
       .then(data => {
         let imgUrl = data.data.artist.image[4]['#text']
+
         if (!imgUrl) {
-          imgUrl = `http://highfidelitycds.com/img/vinyl.png`
+          imgUrl = VINYL_IMG_URL
         }
 
         this.setState({loading: false})
@@ -47,8 +54,16 @@ class ArtistCard extends React.Component {
       })
       .catch(() => {
         this.setState({loading: false})
-        this.setState({imgUrl: `http://highfidelitycds.com/img/vinyl.png`})
+        this.setState({imgUrl: VINYL_IMG_URL})
       })
+  }
+
+  componentDidMount () {
+    this.getCardImage(this.props)
+  }
+
+  componentWillReceiveProps (newProps) {
+    this.getCardImage(newProps)
   }
 
   render () {
@@ -61,13 +76,12 @@ class ArtistCard extends React.Component {
     }
     if (this.state.loading) {
       return (
-        <Container fluid style={this.style.divStyle}>
-          <Row className='justify-content-sm-center'>
-            <Col sm='6'>
-              <Loading />
-            </Col>
-          </Row>
-        </Container>
+        <Card>
+          <CardImg width='75%' src={this.state.imgUrl} />
+          <CardBlock>
+            <Loading />
+          </CardBlock>
+        </Card>
       )
     }
 

@@ -26,22 +26,13 @@ class ArtistsSection extends React.Component {
 
     this.state = {
       loading: true,
-      range: '',
       activePill: '0'
     }
     this.updateRange = this.updateRange.bind(this)
   }
 
   updateRange (pill) {
-    let range = null
-    if (pill === '1') {
-      range = 'year'
-    } else if (pill === '2') {
-      range = 'month'
-    }
-    this.getTopArtists(range)
-
-    this.setState({loading: true, activePill: pill})
+    this.setState({activePill: pill, topArtists: this.state.data[pill]})
   }
 
   getTopArtists (range) {
@@ -63,8 +54,7 @@ class ArtistsSection extends React.Component {
             }
           })
 
-        this.setState({topArtists: data})
-        this.setState({loading: false})
+        return data
       })
   }
 
@@ -74,7 +64,11 @@ class ArtistsSection extends React.Component {
       .get(`http://localhost:3000/api/user/getscrobbles?user=${username}&receiveData=false`, {'timeout': 600000})
       .then(data => {
         return axios
-                .all([this.getTopArtists(null)])
+                .all([this.getTopArtists(null), this.getTopArtists('year'), this.getTopArtists('month')])
+      })
+      .then(data => {
+        // initially show global
+        this.setState({loading: false, topArtists: data[0], data})
       })
   }
 

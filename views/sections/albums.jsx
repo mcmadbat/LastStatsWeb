@@ -27,22 +27,13 @@ class AlbumsSection extends React.Component {
 
     this.state = {
       loading: true,
-      range: '',
       activePill: '0'
     }
     this.updateRange = this.updateRange.bind(this)
   }
 
   updateRange (pill) {
-    let range = null
-    if (pill === '1') {
-      range = 'year'
-    } else if (pill === '2') {
-      range = 'month'
-    }
-    this.getTopAlbums(range)
-
-    this.setState({loading: true, activePill: pill})
+    this.setState({activePill: pill, topAlbums: this.state.data[pill]})
   }
 
   getTopAlbums (range) {
@@ -64,8 +55,7 @@ class AlbumsSection extends React.Component {
               plays: res.data[x].plays
             }
           })
-        this.setState({topAlbums: data})
-        this.setState({loading: false})
+        return data
       })
   }
 
@@ -75,7 +65,11 @@ class AlbumsSection extends React.Component {
       .get(`http://localhost:3000/api/user/getscrobbles?user=${username}&receiveData=false`, {'timeout': 600000})
       .then(data => {
         return axios
-                .all([this.getTopAlbums()])
+                .all([this.getTopAlbums(null), this.getTopAlbums('year'), this.getTopAlbums('month')])
+      })
+      .then(data => {
+        // initially show global
+        this.setState({loading: false, topAlbums: data[0], data})
       })
   }
 
