@@ -31,8 +31,16 @@ class AlbumCard extends React.Component {
       .get(`http://localhost:3000/api/user/getAlbumInfo?album=${this.props.data.album}&artist=${this.props.data.artist}`, {'timeout': 600000})
       .then(data => {
         let imgUrl = data.data.album.image[4]['#text']
+
+        if (!imgUrl) {
+          imgUrl = `http://highfidelitycds.com/img/vinyl.png`
+        }
         this.setState({loading: false})
         this.setState({imgUrl})
+      })
+      .catch(() => {
+        this.setState({loading: false})
+        this.setState({imgUrl: `http://highfidelitycds.com/img/vinyl.png`})
       })
   }
 
