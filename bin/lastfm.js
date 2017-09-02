@@ -14,7 +14,7 @@ const SECONDS_IN_DAY = 86400
 const DATA_REFRESH_INTERVAL = SECONDS_IN_DAY
 
 // performs a http GET operation on the url and return the response in a promise
-let get = (url) => {
+let get = url => {
   let options = {
     uri: url,
     json: true
@@ -85,7 +85,7 @@ let getAllScrobbles = (url, pages) => {
 }
 
 // gets basic user information
-lastfm.getUserInfo = (user) => {
+lastfm.getUserInfo = user => {
   if (!user) {
     return Promise.reject(new Error(`Param user is null!`))
   }
@@ -119,7 +119,7 @@ lastfm.getUserInfo = (user) => {
 }
 
 // gets all scrobbles for a user
-lastfm.getScrobbles = (user) => {
+lastfm.getScrobbles = user => {
   if (!user) {
     return Promise.reject(new Error(`Param user is null!`))
   }
@@ -175,6 +175,46 @@ lastfm.getScrobbles = (user) => {
       }
       return Promise.reject(err)
     })
+}
+
+// essentially a wrapper for the artistinfo api call
+lastfm.getArtistInfo = artistName => {
+  if (!artistName) {
+    return Promise.reject(new Error(`artistName is not set!`))
+  }
+
+  let url = `${URL_ROOT}?method=artist.getinfo&artist=${artistName}&api_key=${KEY}&format=json`
+
+  return get(url)
+          .then(data => {
+            if (data.error) {
+              return Promise.reject(data)
+            }
+
+            return Promise.resolve(data)
+          })
+}
+
+// essentially a wrapper for the albuminfo api call
+lastfm.getAlbumInfo = (artistName, albumName) => {
+  if (!artistName) {
+    return Promise.reject(new Error(`artistName is not set!`))
+  }
+
+  if (!albumName) {
+    return Promise.reject(new Error(`albumName is not set!`))
+  }
+
+  let url = `${URL_ROOT}?method=album.getinfo&artist=${artistName}&album=${albumName}&api_key=${KEY}&format=json`
+
+  return get(url)
+          .then(data => {
+            if (data.error) {
+              return Promise.reject(data)
+            }
+
+            return Promise.resolve(data)
+          })
 }
 
 module.exports = lastfm

@@ -11,7 +11,7 @@ function createDataSet (dataArray) {
     borderDash: [],
     borderDashOffset: 5.0,
     borderJoinStyle: 'miter',
-    pointBorderColor: 'red',
+    pointBorderColor: 'black',
     pointBackgroundColor: 'red',
     pointBorderWidth: 1,
     pointHoverRadius: 5,
@@ -24,7 +24,7 @@ function createDataSet (dataArray) {
   }]
 }
 
-class BarGraphCard extends React.Component {
+class LineGraphCard extends React.Component {
   constructor (props) {
     super(props)
 
@@ -42,8 +42,7 @@ class BarGraphCard extends React.Component {
 
     let h2Style = {
       textAlign: `center`,
-      margin: '10px',
-      color: 'red'
+      margin: '10px'
     }
 
     this.style = {
@@ -92,4 +91,4 @@ class BarGraphCard extends React.Component {
   }
 }
 
-module.exports = BarGraphCard
+module.exports = LineGraphCard

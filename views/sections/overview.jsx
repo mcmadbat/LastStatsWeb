@@ -1,11 +1,10 @@
 import React from 'react'
 import {Container, Row, Col} from 'reactstrap'
-import BarGraphCard from './../layouts/barGraphCard'
-import TableCard from './../layouts/tableCard'
+import LineGraphCard from './../layouts/lineGraphCard'
 import axios from 'axios'
 import Loading from 'react-loading-animation'
 
-class Overview extends React.Component {
+class OverviewSection extends React.Component {
   constructor (props) {
     super(props)
 
@@ -118,7 +117,7 @@ class Overview extends React.Component {
 
         let columns = [{
           id: 'title',
-          title: 'title',
+          title: 'Title',
           isKey: true
         }, {
           id: 'plays',
@@ -136,7 +135,7 @@ class Overview extends React.Component {
       .get(`http://localhost:3000/api/user/getscrobbles?user=${username}&receiveData=false`, {'timeout': 600000})
       .then(data => {
         return axios
-                .all([this.getPlaysByYear(), this.getPlaysLastYear(), this.getTopArtists(), this.getTopTracks(), this.getTopAlbums()])
+                .all([this.getPlaysByYear(), this.getPlaysLastYear(), this.getTopTracks()])
       })
       .then(() => {
         this.setState({loading: false})
@@ -167,19 +166,10 @@ class Overview extends React.Component {
 
         <Row>
           <Col sm='12' lg='6'>
-            <BarGraphCard title='Plays by Year' data={this.state.playsByYear} />
+            <LineGraphCard title='Plays by Year' data={this.state.playsByYear} />
           </Col>
           <Col sm='12' lg='6'>
-            <BarGraphCard title='Last 12 Months' data={this.state.lastYear} />
-          </Col>
-          <Col sm='12' lg='4'>
-            <TableCard title='Top Artists' data={this.state.topArtists} columns={this.state.topArtistColumns} />
-          </Col>
-          <Col sm='12' lg='4'>
-            <TableCard title='Top Albums' data={this.state.topAlbums} columns={this.state.topAlbumColumns} />
-          </Col>
-          <Col sm='12' lg='4'>
-            <TableCard title='Top Tracks' data={this.state.topTracks} columns={this.state.topTracksColumns} />
+            <LineGraphCard title='Last 12 Months' data={this.state.lastYear} />
           </Col>
         </Row>
       </Container>
@@ -187,4 +177,4 @@ class Overview extends React.Component {
   }
 }
 
-module.exports = Overview
+module.exports = OverviewSection

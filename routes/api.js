@@ -133,4 +133,37 @@ router.get('/user/scrobblecount', function (req, res, next) {
     })
 })
 
+router.get('/user/getArtistInfo', function (req, res, next) {
+  let artistName = req.query.artist
+
+  lastfm
+    .getArtistInfo(artistName)
+    .then(info => {
+      res.status(200).send(info)
+    })
+    .catch(err => {
+      console.error(err)
+      if (!res.headerSent) {
+        res.status(500).send(err)
+      }
+    })
+})
+
+router.get('/user/getAlbumInfo', function (req, res, next) {
+  let albumName = req.query.album
+  let artistName = req.query.artist
+
+  lastfm
+    .getAlbumInfo(artistName, albumName)
+    .then(info => {
+      res.status(200).send(info)
+    })
+    .catch(err => {
+      console.error(err)
+      if (!res.headerSent) {
+        res.status(500).send(err)
+      }
+    })
+})
+
 module.exports = router

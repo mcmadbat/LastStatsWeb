@@ -87,9 +87,12 @@ analysis.topAlbums = (scrobbles, range, limit) => {
     if (!range) {
       // all-time
       if (result[scrobble.album]) {
-        result[scrobble.album]++
+        result[scrobble.album].playCount++
       } else {
-        result[scrobble.album] = 1
+        result[scrobble.album] = {
+          playCount: 1,
+          artist: scrobble.artist
+        }
       }
     }
 
@@ -103,9 +106,12 @@ analysis.topAlbums = (scrobbles, range, limit) => {
 
     if (range === 'year') {
       if (result[bracket.year][scrobble.album]) {
-        result[bracket.year][scrobble.album]++
+        result[bracket.year][scrobble.album].playCount++
       } else {
-        result[bracket.year][scrobble.album] = 1
+        result[bracket.year][scrobble.album] = {
+          playCount: 1,
+          artist: scrobble.artist
+        }
       }
     } else if (range === 'month') {
       if (!result[bracket.year][bracket.month]) {
@@ -113,9 +119,12 @@ analysis.topAlbums = (scrobbles, range, limit) => {
       }
 
       if (result[bracket.year][bracket.month][scrobble.album]) {
-        result[bracket.year][bracket.month][scrobble.album]++
+        result[bracket.year][bracket.month][scrobble.album].playCount++
       } else {
-        result[bracket.year][bracket.month][scrobble.album] = 1
+        result[bracket.year][bracket.month][scrobble.album] = {
+          playCount: 1,
+          artist: scrobble.artist
+        }
       }
     }
   })
@@ -126,7 +135,8 @@ analysis.topAlbums = (scrobbles, range, limit) => {
       .map(x => {
         return {
           album: x,
-          plays: result[x]
+          artist: result[x].artist,
+          plays: result[x].playCount
         }
       })
       .sort((a, b) => {
@@ -140,7 +150,10 @@ analysis.topAlbums = (scrobbles, range, limit) => {
 
     result = {}
     arr.forEach(x => {
-      result[x.album] = x.plays
+      result[x.album] = {
+        artist: x.artist,
+        plays: x.plays
+      }
     })
   }
 

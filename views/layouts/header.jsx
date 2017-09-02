@@ -7,7 +7,7 @@ class Header extends React.Component {
 
     let divStyle = {
       backgroundColor: `#ff0000`,
-      padding: `50px`,
+      padding: `30px`,
       color: `white`
     }
 
