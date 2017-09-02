@@ -13,7 +13,7 @@ module.exports = {
   output: {
     path: path.join(__dirname, '/dist/'),
     filename: '[name]-[hash].min.js',
-    publicPath: '/'
+    publicPath: '/laststats'
   },
   resolve: {
     extensions: ['.js', '.jsx']
@@ -54,6 +54,15 @@ module.exports = {
     }, {
       test: /\.css$/,
       loader: ExtractTextPlugin.extract('style', 'css?modules&localIdentName=[name]---[local]---[hash:base64:5]!postcss')
+    },{
+      test: /\.jsx?$/,
+      exclude: /node_modules/,
+      loader: 'string-replace-loader',
+      query: {
+        search: 'http://localhost:3000',
+        replace: 'https://mcmadbat.me/laststats',
+        flags: 'g'
+      }
     }]
   }
 }
