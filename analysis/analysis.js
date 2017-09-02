@@ -1,3 +1,5 @@
+let moment = require('moment')
+
 let analysis = {}
 
 const _MONTHS = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
@@ -11,70 +13,64 @@ let getTimeBracket = date => {
   return {year, month, day}
 }
 
+let filterScrobbles = (scrobbles, range) => {
+  return scrobbles.filter(scrobble => {
+    if (!range) {
+      return true
+    }
+
+    let scrobbleTime = moment(new Date(scrobble.time * 1000))
+    let curTime = moment()
+
+    if (range === 'year') {
+      // check if older than a year
+      curTime.subtract(1, 'year')
+    } else if (range === 'month') {
+      curTime.subtract(1, 'month')
+    } else {
+      return true
+    }
+
+    return curTime.isBefore(scrobbleTime)
+  })
+}
+
 // top artists
 analysis.topArtists = (scrobbles, range, limit) => {
   let result = {}
 
+  scrobbles = filterScrobbles(scrobbles, range)
+
   scrobbles.forEach(scrobble => {
-    if (!range) {
-      // all-time
-      if (result[scrobble.artist]) {
-        result[scrobble.artist]++
-      } else {
-        result[scrobble.artist] = 1
-      }
-    }
-
-    let date = new Date(scrobble.time * 1000)
-
-    let bracket = getTimeBracket(date)
-
-    if (!result[bracket.year]) {
-      result[bracket.year] = {}
-    }
-
-    if (range === 'year') {
-      if (result[bracket.year][scrobble.artist]) {
-        result[bracket.year][scrobble.artist]++
-      } else {
-        result[bracket.year][scrobble.artist] = 1
-      }
-    } else if (range === 'month') {
-      if (!result[bracket.year][bracket.month]) {
-        result[bracket.year][bracket.month] = {}
-      }
-
-      if (result[bracket.year][bracket.month][scrobble.artist]) {
-        result[bracket.year][bracket.month][scrobble.artist]++
-      } else {
-        result[bracket.year][bracket.month][scrobble.artist] = 1
-      }
+    if (result[scrobble.artist]) {
+      result[scrobble.artist]++
+    } else {
+      result[scrobble.artist] = 1
     }
   })
 
   // now only return the top
-  if (!range) {
-    let arr = Object.keys(result)
-      .map(x => {
-        return {
-          artist: x,
-          plays: result[x]
-        }
-      })
-      .sort((a, b) => {
-        if (a.plays >= b.plays) {
-          return -1
-        } else {
-          return 1
-        }
-      })
-      .slice(0, limit)
 
-    result = {}
-    arr.forEach(x => {
-      result[x.artist] = x.plays
+  let arr = Object.keys(result)
+    .map(x => {
+      return {
+        artist: x,
+        plays: result[x]
+      }
     })
-  }
+    .sort((a, b) => {
+      if (a.plays >= b.plays) {
+        return -1
+      } else {
+        return 1
+      }
+    })
+    .slice(0, limit)
+
+  result = {}
+  arr.forEach(x => {
+    result[x.artist] = x.plays
+  })
 
   return Promise.resolve(result)
 }
@@ -83,79 +79,44 @@ analysis.topArtists = (scrobbles, range, limit) => {
 analysis.topAlbums = (scrobbles, range, limit) => {
   let result = {}
 
+  scrobbles = filterScrobbles(scrobbles, range)
+
   scrobbles.forEach(scrobble => {
-    if (!range) {
-      // all-time
-      if (result[scrobble.album]) {
-        result[scrobble.album].playCount++
-      } else {
-        result[scrobble.album] = {
-          playCount: 1,
-          artist: scrobble.artist
-        }
-      }
-    }
-
-    let date = new Date(scrobble.time * 1000)
-
-    let bracket = getTimeBracket(date)
-
-    if (!result[bracket.year]) {
-      result[bracket.year] = {}
-    }
-
-    if (range === 'year') {
-      if (result[bracket.year][scrobble.album]) {
-        result[bracket.year][scrobble.album].playCount++
-      } else {
-        result[bracket.year][scrobble.album] = {
-          playCount: 1,
-          artist: scrobble.artist
-        }
-      }
-    } else if (range === 'month') {
-      if (!result[bracket.year][bracket.month]) {
-        result[bracket.year][bracket.month] = {}
-      }
-
-      if (result[bracket.year][bracket.month][scrobble.album]) {
-        result[bracket.year][bracket.month][scrobble.album].playCount++
-      } else {
-        result[bracket.year][bracket.month][scrobble.album] = {
-          playCount: 1,
-          artist: scrobble.artist
-        }
+    if (result[scrobble.album]) {
+      result[scrobble.album].playCount++
+    } else {
+      result[scrobble.album] = {
+        playCount: 1,
+        artist: scrobble.artist
       }
     }
   })
 
   // now only return the top
-  if (!range) {
-    let arr = Object.keys(result)
-      .map(x => {
-        return {
-          album: x,
-          artist: result[x].artist,
-          plays: result[x].playCount
-        }
-      })
-      .sort((a, b) => {
-        if (a.plays >= b.plays) {
-          return -1
-        } else {
-          return 1
-        }
-      })
-      .slice(0, limit)
-
-    result = {}
-    arr.forEach(x => {
-      result[x.album] = {
-        artist: x.artist,
-        plays: x.plays
+  let arr = Object.keys(result)
+    .map(x => {
+      return {
+        album: x,
+        artist: result[x].artist,
+        plays: result[x].playCount
       }
     })
-  }
+    .sort((a, b) => {
+      if (a.plays >= b.plays) {
+        return -1
+      } else {
+        return 1
+      }
+    })
+    .slice(0, limit)
+
+  result = {}
+  arr.forEach(x => {
+    result[x.album] = {
+      artist: x.artist,
+      plays: x.plays
+    }
+  })
 
   return Promise.resolve(result)
 }
@@ -164,66 +125,37 @@ analysis.topAlbums = (scrobbles, range, limit) => {
 analysis.topTracks = (scrobbles, range, limit) => {
   let result = {}
 
+  scrobbles = filterScrobbles(scrobbles, range)
+
   scrobbles.forEach(scrobble => {
-    if (!range) {
-      // all-time
-      if (result[scrobble.name]) {
-        result[scrobble.name]++
-      } else {
-        result[scrobble.name] = 1
-      }
-    }
-
-    let date = new Date(scrobble.time * 1000)
-
-    let bracket = getTimeBracket(date)
-
-    if (!result[bracket.year]) {
-      result[bracket.year] = {}
-    }
-
-    if (range === 'year') {
-      if (result[bracket.year][scrobble.name]) {
-        result[bracket.year][scrobble.name]++
-      } else {
-        result[bracket.year][scrobble.name] = 1
-      }
-    } else if (range === 'month') {
-      if (!result[bracket.year][bracket.month]) {
-        result[bracket.year][bracket.month] = {}
-      }
-
-      if (result[bracket.year][bracket.month][scrobble.name]) {
-        result[bracket.year][bracket.month][scrobble.name]++
-      } else {
-        result[bracket.year][bracket.month][scrobble.name] = 1
-      }
+    if (result[scrobble.name]) {
+      result[scrobble.name]++
+    } else {
+      result[scrobble.name] = 1
     }
   })
 
   // now only return the top
-  if (!range) {
-    let arr = Object.keys(result)
-      .map(x => {
-        return {
-          name: x,
-          plays: result[x]
-        }
-      })
-      .sort((a, b) => {
-        if (a.plays >= b.plays) {
-          return -1
-        } else {
-          return 1
-        }
-      })
-      .slice(0, limit)
-
-    result = {}
-    arr.forEach(x => {
-      result[x.name] = x.plays
+  let arr = Object.keys(result)
+    .map(x => {
+      return {
+        name: x,
+        plays: result[x]
+      }
     })
-  }
+    .sort((a, b) => {
+      if (a.plays >= b.plays) {
+        return -1
+      } else {
+        return 1
+      }
+    })
+    .slice(0, limit)
+
+  result = {}
+  arr.forEach(x => {
+    result[x.name] = x.plays
+  })
 
   return Promise.resolve(result)
 }

@@ -23,10 +23,17 @@ class AlbumCard extends React.Component {
       h1: h1Style
     }
 
-    this.state = {loading: true, imgUrl: ''}
+    this.state = {loading: true, imgUrl: '', hasData: true}
   }
 
   componentDidMount () {
+    if (!this.props.data) {
+      this.setState({hasData: false})
+      this.setState({loading: false})
+      this.setState({imgUrl: 'https://vignette2.wikia.nocookie.net/uncyclopedia/images/4/44/White_square.png/revision/latest?cb=20061003200043'})
+      return
+    }
+
     axios
       .get(`http://localhost:3000/api/user/getAlbumInfo?album=${this.props.data.album}&artist=${this.props.data.artist}`, {'timeout': 600000})
       .then(data => {
@@ -45,6 +52,13 @@ class AlbumCard extends React.Component {
   }
 
   render () {
+    if (!this.state.hasData) {
+      return (
+        <Card>
+          <CardImg width='75%' src={this.state.imgUrl} />
+        </Card>
+      )
+    }
     if (this.state.loading) {
       return (
         <Container fluid style={this.style.divStyle}>
