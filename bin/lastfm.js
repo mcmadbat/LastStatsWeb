@@ -1,5 +1,4 @@
 let request = require('request-promise')
-let ProgressBar = require('ascii-progress')
 let db = require('../db/mongo')
 
 const KEY = process.env.LAST_FM_KEY
@@ -26,19 +25,12 @@ let get = url => {
 let getAllScrobbles = (url, pages) => {
   let promises = []
 
-  console.log(`Trying to retrieve ${pages} pages of data...`)
-
-  // helpful
-  let bar = new ProgressBar({
-    schema: ':current/:total',
-    total: pages
-  })
+  console.log(`Retrieving ${pages} pages of data...`)
 
   for (var x = 1; x <= pages; x++) {
     let y = x
     let promise = get(`${url}&page=${y}`)
       .then(data => {
-        bar.tick()
         if (data.error) {
           return Promise.reject(data)
         }
@@ -50,7 +42,6 @@ let getAllScrobbles = (url, pages) => {
         return Promise.resolve(scrobbles)
       })
       .catch(err => {
-        bar.tick()
         if (err.message) {
           return Promise.reject(err.message)
         }
