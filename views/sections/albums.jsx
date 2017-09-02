@@ -3,6 +3,7 @@ import {Container, Row, Col} from 'reactstrap'
 import axios from 'axios'
 import Loading from 'react-loading-animation'
 import AlbumCard from './../layouts/albumCard'
+import RangeSelector from './../layouts/rangeSelector'
 
 class AlbumsSection extends React.Component {
   constructor (props) {
@@ -20,34 +21,39 @@ class AlbumsSection extends React.Component {
     this.style = {
       div: divStyle,
       h1: h1Style
+
     }
 
-    this.state = {loading: true}
+    this.state = {
+      loading: true,
+      range: '',
+      activePill: '0'
+    }
+    this.updateRange = this.updateRange.bind(this)
   }
 
-  getTopArtists () {
-    let username = this.props.user.name
+  updateRange (pill) {
+    let range = null
+    if (pill === '1') {
+      range = 'year'
+    } else if (pill === '2') {
+      range = 'month'
+    }
+    this.getTopAlbums(range)
 
-    return axios
-      .get(`http://localhost:3000/api/user/topalbums?user=${username}&limit=6`, {'timeout': 600000})
-      .then(res => {
-        let data = Object
-          .keys(res.data).map(x => {
-            return {
-              artist: x,
-              plays: res.data[x]
-            }
-          })
-
-        this.setState({topArtists: data})
-      })
+    this.setState({loading: true, activePill: pill})
   }
 
-  getTopAlbums () {
+  getTopAlbums (range) {
     let username = this.props.user.name
+    let url = `http://localhost:3000/api/user/topalbums?user=${username}&limit=10`
+
+    if (range) {
+      url += `&range=${range}`
+    }
 
     return axios
-      .get(`http://localhost:3000/api/user/topalbums?user=${username}&limit=10`, {'timeout': 600000})
+      .get(url, {'timeout': 600000})
       .then(res => {
         let data = Object
           .keys(res.data).map(x => {
@@ -58,6 +64,7 @@ class AlbumsSection extends React.Component {
             }
           })
         this.setState({topAlbums: data})
+        this.setState({loading: false})
       })
   }
 
@@ -67,10 +74,7 @@ class AlbumsSection extends React.Component {
       .get(`http://localhost:3000/api/user/getscrobbles?user=${username}&receiveData=false`, {'timeout': 600000})
       .then(data => {
         return axios
-                .all([this.getTopArtists(), this.getTopAlbums()])
-      })
-      .then(() => {
-        this.setState({loading: false})
+                .all([this.getTopAlbums()])
       })
   }
 
@@ -80,7 +84,7 @@ class AlbumsSection extends React.Component {
         <Container fluid style={this.style.divStyle}>
           <Row className='justify-content-sm-center'>
             <Col sm='6'>
-              <h1 style={this.style.h1}>Loading (this may take a while...) </h1>
+              <h1 style={this.style.h1}>Top Albums</h1>
               <Loading />
             </Col>
           </Row>
@@ -95,6 +99,8 @@ class AlbumsSection extends React.Component {
             <h1 style={this.style.h1}>Top Albums</h1>
           </Col>
         </Row>
+
+        <RangeSelector activePill={this.state.activePill} updateRange={this.updateRange} />
 
         <Row>
           <Col lg='2' sm='12'>

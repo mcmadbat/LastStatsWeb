@@ -3,6 +3,7 @@ import {Container, Row, Col} from 'reactstrap'
 import axios from 'axios'
 import Loading from 'react-loading-animation'
 import ArtistCard from './../layouts/artistCard'
+import RangeSelector from './../layouts/rangeSelector'
 
 class ArtistsSection extends React.Component {
   constructor (props) {
@@ -22,14 +23,36 @@ class ArtistsSection extends React.Component {
       h1: h1Style
     }
 
-    this.state = {loading: true}
+    this.state = {
+      loading: true,
+      range: '',
+      activePill: '0'
+    }
+    this.updateRange = this.updateRange.bind(this)
   }
 
-  getTopArtists () {
+  updateRange (pill) {
+    let range = null
+    if (pill === '1') {
+      range = 'year'
+    } else if (pill === '2') {
+      range = 'month'
+    }
+    this.getTopArtists(range)
+
+    this.setState({loading: true, activePill: pill})
+  }
+
+  getTopArtists (range) {
     let username = this.props.user.name
+    let url = `http://localhost:3000/api/user/topartists?user=${username}&limit=6`
+
+    if (range) {
+      url += `&range=${range}`
+    }
 
     return axios
-      .get(`http://localhost:3000/api/user/topartists?user=${username}&limit=6`, {'timeout': 600000})
+      .get(url, {'timeout': 600000})
       .then(res => {
         let data = Object
           .keys(res.data).map(x => {
@@ -40,6 +63,7 @@ class ArtistsSection extends React.Component {
           })
 
         this.setState({topArtists: data})
+        this.setState({loading: false})
       })
   }
 
@@ -49,10 +73,7 @@ class ArtistsSection extends React.Component {
       .get(`http://localhost:3000/api/user/getscrobbles?user=${username}&receiveData=false`, {'timeout': 600000})
       .then(data => {
         return axios
-                .all([this.getTopArtists()])
-      })
-      .then(() => {
-        this.setState({loading: false})
+                .all([this.getTopArtists(null)])
       })
   }
 
@@ -61,8 +82,12 @@ class ArtistsSection extends React.Component {
       return (
         <Container fluid style={this.style.divStyle}>
           <Row className='justify-content-sm-center'>
+            <Col sm='12'>
+              <h1 style={this.style.h1}>Top Artists</h1>
+            </Col>
+          </Row>
+          <Row className='justify-content-sm-center'>
             <Col sm='6'>
-              <h1 style={this.style.h1}>Loading (this may take a while...) </h1>
               <Loading />
             </Col>
           </Row>
@@ -73,10 +98,12 @@ class ArtistsSection extends React.Component {
     return (
       <Container fluid style={this.style.divStyle}>
         <Row className='justify-content-sm-center'>
-          <Col sm='6'>
+          <Col sm='12'>
             <h1 style={this.style.h1}>Top Artists</h1>
           </Col>
         </Row>
+
+        <RangeSelector activePill={this.state.activePill} updateRange={this.updateRange} />
 
         <Row>
           <Col lg='2' sm='12'>
