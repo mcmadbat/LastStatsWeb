@@ -17,15 +17,15 @@ class UsernameInput extends React.Component {
       maxWidth: '800px'
     }
 
+    let backgroundStyle = {
+      width: '100vw',
+      height: '100vh',
+      background: 'linear-gradient(to right, rgba(255,0,0,0.2), rgba(255,0,0,0.5))'
+    }
+
     let h1Style = {
       textAlign: `center`,
       fontSize: '3em'
-    }
-
-    let centerDiv = {
-      display: 'block',
-      width: '100%',
-      margin: '0 auto'
     }
 
     let inputStyle = {
@@ -41,8 +41,8 @@ class UsernameInput extends React.Component {
     this.style = {
       div: divStyle,
       h1: h1Style,
-      centerDiv: centerDiv,
-      input: inputStyle
+      input: inputStyle,
+      backgroundStyle
     }
 
     this.state = {username: ''}
@@ -59,22 +59,26 @@ class UsernameInput extends React.Component {
   render () {
     if (this.props.showError) {
       return (
+        <div style={this.style.backgroundStyle}>
+          <Container style={this.style.div}>
+            <UncontrolledAlert color='danger'>
+              <strong>Oh snap!</strong> The user you searched for doesn't exist!
+            </UncontrolledAlert>
+            <h1 style={this.style.h1}>Please enter your last.fm username</h1>
+            <Input name='username' type='text' size='lg' id='inputUser' placeholder='mcmadbat3' style={this.style.input} onChange={this.handleChange.bind(this)} />
+            <Button color='primary' onClick={() => this.onclick()}>Submit</Button>
+          </Container>
+        </div>
+      )
+    }
+    return (
+      <div style={this.style.backgroundStyle}>
         <Container style={this.style.div}>
-          <UncontrolledAlert color='danger'>
-            <strong>Oh snap!</strong> The user you searched for doesn't exist!
-          </UncontrolledAlert>
           <h1 style={this.style.h1}>Please enter your last.fm username</h1>
           <Input name='username' type='text' size='lg' id='inputUser' placeholder='mcmadbat3' style={this.style.input} onChange={this.handleChange.bind(this)} />
           <Button color='primary' onClick={() => this.onclick()}>Submit</Button>
         </Container>
-      )
-    }
-    return (
-      <Container style={this.style.div}>
-        <h1 style={this.style.h1}>Please enter your last.fm username</h1>
-        <Input name='username' type='text' size='lg' id='inputUser' placeholder='mcmadbat3' style={this.style.input} onChange={this.handleChange.bind(this)} />
-        <Button color='primary' onClick={() => this.onclick()}>Submit</Button>
-      </Container>
+      </div>
     )
   }
 }
