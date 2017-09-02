@@ -129,9 +129,12 @@ analysis.topTracks = (scrobbles, range, limit) => {
 
   scrobbles.forEach(scrobble => {
     if (result[scrobble.name]) {
-      result[scrobble.name]++
+      result[scrobble.name].playCount++
     } else {
-      result[scrobble.name] = 1
+      result[scrobble.name] = {
+        playCount: 1,
+        artist: scrobble.artist
+      }
     }
   })
 
@@ -140,7 +143,8 @@ analysis.topTracks = (scrobbles, range, limit) => {
     .map(x => {
       return {
         name: x,
-        plays: result[x]
+        artist: result[x].artist,
+        plays: result[x].playCount
       }
     })
     .sort((a, b) => {
@@ -154,7 +158,10 @@ analysis.topTracks = (scrobbles, range, limit) => {
 
   result = {}
   arr.forEach(x => {
-    result[x.name] = x.plays
+    result[x.name] = {
+      artist: x.artist,
+      plays: x.plays
+    }
   })
 
   return Promise.resolve(result)

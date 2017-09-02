@@ -40,14 +40,14 @@ class AlbumCard extends React.Component {
         let imgUrl = data.data.album.image[4]['#text']
 
         if (!imgUrl) {
-          imgUrl = `http://highfidelitycds.com/img/vinyl.png`
+          imgUrl = `https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Disque_Vinyl.svg/500px-Disque_Vinyl.svg.png`
         }
         this.setState({loading: false})
         this.setState({imgUrl})
       })
       .catch(() => {
         this.setState({loading: false})
-        this.setState({imgUrl: `http://highfidelitycds.com/img/vinyl.png`})
+        this.setState({imgUrl: `https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Disque_Vinyl.svg/500px-Disque_Vinyl.svg.png`})
       })
   }
 

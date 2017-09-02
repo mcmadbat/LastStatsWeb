@@ -3,6 +3,7 @@ import Overview from './sections/overview'
 import Header from './layouts/header'
 import Artists from './sections/artists'
 import Albums from './sections/albums'
+import Tracks from './sections/tracks'
 
 class App extends React.Component {
   render () {
@@ -16,6 +17,7 @@ class App extends React.Component {
         <Overview user={this.props.user} />
         <Artists user={this.props.user} />
         <Albums user={this.props.user} />
+        <Tracks user={this.props.user} />
       </div>
     )
   };

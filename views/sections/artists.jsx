@@ -15,7 +15,8 @@ class ArtistsSection extends React.Component {
 
     let h1Style = {
       textAlign: `center`,
-      margin: '10px'
+      margin: '10px',
+      paddingTop: '50px'
     }
 
     this.style = {

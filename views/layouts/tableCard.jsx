@@ -8,7 +8,8 @@ class TableCard extends React.Component {
       margin: 'auto 0px',
       height: '100%',
       width: '100%',
-      padding: '20px'
+      padding: '20px',
+      color: 'black'
     }
 
     let barStyle = {
@@ -55,7 +56,7 @@ class TableCard extends React.Component {
     return (
       <div style={this.style.divStyle}>
         <h2 style={this.style.h2Style}>{this.props.title}</h2>
-        <table className='table'>
+        <table className='table table-hover table-condensed'>
           <thead>
             <tr>
               {columns}
