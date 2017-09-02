@@ -13,7 +13,7 @@ class UsernameInput extends React.Component {
       marginRight: '-50%',
       transform: 'translate(-50%, -50%)',
       width: '50%',
-      minWidth: '400px',
+      minWidth: '300px',
       maxWidth: '800px'
     }
 
