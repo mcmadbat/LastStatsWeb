@@ -25,7 +25,16 @@ class TracksSection extends React.Component {
       h1: h1Style
     }
 
+    this.gatherData = this.gatherData.bind(this)
     this.getTopTracks = this.getTopTracks.bind(this)
+  }
+
+  gatherData (username) {
+    axios
+      .all([this.getTopTracks(username, null), this.getTopTracks(username, 'year'), this.getTopTracks(username, 'month')])
+      .then(data => {
+        this.setState({loading: false, topTracks: data})
+      })
   }
 
   getTopTracks (username, range) {
@@ -69,12 +78,17 @@ class TracksSection extends React.Component {
 
     this.setState({columns})
 
-    let username = this.props.user.name
-    axios
-      .all([this.getTopTracks(username, null), this.getTopTracks(username, 'year'), this.getTopTracks(username, 'month')])
-      .then(data => {
-        this.setState({loading: false, topTracks: data})
-      })
+    if (this.props.loading) {
+      this.setState({loading: true})
+    } else {
+      this.gatherData(this.props.user.name)
+    }
+  }
+
+  componentWillReceiveProps (newProps) {
+    if (!newProps.loading && newProps.user) {
+      this.gatherData(newProps.user.name)
+    }
   }
 
   render () {

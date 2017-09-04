@@ -54,7 +54,7 @@ module.exports = {
     }, {
       test: /\.css$/,
       loader: ExtractTextPlugin.extract('style', 'css?modules&localIdentName=[name]---[local]---[hash:base64:5]!postcss')
-    },{
+    }, {
       test: /\.jsx?$/,
       exclude: /node_modules/,
       loader: 'string-replace-loader',

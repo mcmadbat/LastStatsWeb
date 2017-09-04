@@ -14,7 +14,8 @@ class UsernameInput extends React.Component {
       transform: 'translate(-50%, -50%)',
       width: '50%',
       minWidth: '300px',
-      maxWidth: '800px'
+      maxWidth: '800px',
+      textAlign: 'center'
     }
 
     let backgroundStyle = {
@@ -29,20 +30,24 @@ class UsernameInput extends React.Component {
     }
 
     let inputStyle = {
-      width: '100%',
       height: '50px',
       fontSize: '20px',
       textAlign: 'center',
       border: '1px solid black',
-      margin: '30px',
+      margin: '0 auto',
       color: 'red'
+    }
+
+    let buttonStyle = {
+      margin: '10px'
     }
 
     this.style = {
       div: divStyle,
       h1: h1Style,
       input: inputStyle,
-      backgroundStyle
+      backgroundStyle,
+      buttonStyle
     }
 
     this.state = {username: ''}
@@ -66,7 +71,7 @@ class UsernameInput extends React.Component {
             </UncontrolledAlert>
             <h1 style={this.style.h1}>Please enter your last.fm username</h1>
             <Input name='username' type='text' size='lg' id='inputUser' placeholder='mcmadbat3' style={this.style.input} onChange={this.handleChange.bind(this)} />
-            <Button color='primary' onClick={() => this.onclick()}>Submit</Button>
+            <Button style={this.style.buttonStyle} color='primary' onClick={() => this.onclick()}>Submit</Button>
           </Container>
         </div>
       )
@@ -76,7 +81,7 @@ class UsernameInput extends React.Component {
         <Container style={this.style.div}>
           <h1 style={this.style.h1}>Please enter your last.fm username</h1>
           <Input name='username' type='text' size='lg' id='inputUser' placeholder='mcmadbat3' style={this.style.input} onChange={this.handleChange.bind(this)} />
-          <Button color='primary' onClick={() => this.onclick()}>Submit</Button>
+          <Button style={this.style.buttonStyle} color='primary' onClick={() => this.onclick()}>Submit</Button>
         </Container>
       </div>
     )
