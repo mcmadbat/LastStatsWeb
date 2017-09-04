@@ -16,15 +16,15 @@ class Header extends React.Component {
     }
 
     let imgStyle = {
-      height: `280px`,
+      height: '75%',
       borderRadius: `50%`,
-      margin: `auto`,
+      margin: `0 auto`,
       display: 'block',
       padding: '15px'
     }
 
     let centerDiv = {
-      margin: `auto 50px`
+      margin: `0 auto`
     }
 
     this.style = {

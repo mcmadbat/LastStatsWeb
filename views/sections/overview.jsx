@@ -22,7 +22,16 @@ class OverviewSection extends React.Component {
       h1: h1Style
     }
 
+    this.gatherData = this.gatherData.bind(this)
     this.state = {loading: true}
+  }
+
+  gatherData (username) {
+    axios
+      .all([this.getPlaysByYear(), this.getPlaysLastYear(), this.getTopTracks()])
+      .then(() => {
+        this.setState({loading: false})
+      })
   }
 
   getPlaysByYear () {
@@ -130,16 +139,17 @@ class OverviewSection extends React.Component {
   }
 
   componentDidMount () {
-    let username = this.props.user.name
-    axios
-      .get(`http://localhost:3000/api/user/getscrobbles?user=${username}&receiveData=false`, {'timeout': 600000})
-      .then(data => {
-        return axios
-                .all([this.getPlaysByYear(), this.getPlaysLastYear(), this.getTopTracks()])
-      })
-      .then(() => {
-        this.setState({loading: false})
-      })
+    if (this.props.loading) {
+      this.setState({loading: true})
+    } else {
+      this.gatherData(this.props.user.name)
+    }
+  }
+
+  componentWillReceiveProps (newProps) {
+    if (!newProps.loading && newProps.user) {
+      this.gatherData(newProps.user.name)
+    }
   }
 
   render () {
