@@ -28,7 +28,18 @@ class ArtistsSection extends React.Component {
       loading: true,
       activePill: '0'
     }
+
+    this.gatherData = this.gatherData.bind(this)
     this.updateRange = this.updateRange.bind(this)
+  }
+
+  gatherData (username) {
+    axios
+      .all([this.getTopArtists(null), this.getTopArtists('year'), this.getTopArtists('month')])
+      .then(data => {
+        // initially show global
+        this.setState({loading: false, topArtists: data[0], data})
+      })
   }
 
   updateRange (pill) {
@@ -59,17 +70,17 @@ class ArtistsSection extends React.Component {
   }
 
   componentDidMount () {
-    let username = this.props.user.name
-    axios
-      .get(`http://localhost:3000/api/user/getscrobbles?user=${username}&receiveData=false`, {'timeout': 600000})
-      .then(data => {
-        return axios
-                .all([this.getTopArtists(null), this.getTopArtists('year'), this.getTopArtists('month')])
-      })
-      .then(data => {
-        // initially show global
-        this.setState({loading: false, topArtists: data[0], data})
-      })
+    if (this.props.loading) {
+      this.setState({loading: true})
+    } else {
+      this.gatherData(this.props.user.name)
+    }
+  }
+
+  componentWillReceiveProps (newProps) {
+    if (!newProps.loading && newProps.user) {
+      this.gatherData(newProps.user.name)
+    }
   }
 
   render () {
